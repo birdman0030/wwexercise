@@ -1,4 +1,6 @@
 from setuptools import setup
+with open("README.md", "r") as f:
+      long_description = f.read()
 
 setup(name='wwpython',
       version='0.1',
@@ -7,5 +9,7 @@ setup(name='wwpython',
       author='Kurt Bird',
       author_email='kurtbird1@gmail.com',
       license='GNU',
-      packages=['wwpython'],
-      zip_safe=False)
+      packages=[
+            "selenium",
+      ],
+      )

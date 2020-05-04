@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 from random import randint
 
 
@@ -8,6 +10,7 @@ def randomNumGen():
     :return generated: a list of integers.
     """
     generated = [randint(0, 1000) for i in range(500)]
+    print(generated)
     return generated
 
 
