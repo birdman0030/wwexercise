@@ -4,12 +4,18 @@ import logging
 from .seleniumwrapper import SeleniumWrapper
 from selenium.webdriver.common.by import By
 
+
 class HomePage(SeleniumWrapper):
-    #CONSTANTS
+    # Constants
+
+    # CSS Selector by Attribute is used due to issues in HTML and code
+    # readability. In homepage.py because Element consistent between pages.
+    FIND_WORKSHOP = (By.CSS_SELECTOR, '[da-action="nav_header_find-a-workshop"]')
 
     logger = logging.getLogger("homepage")
 
     def __init__(self, driver):
-        super()._init_(driver)
+        super().__init__(driver)
 
-# Homepage work TBD
+    def clickFindWorkshop(self):
+        self.clickElement(self.FIND_WORKSHOP)

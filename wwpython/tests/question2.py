@@ -4,33 +4,35 @@ import os
 import sys
 
 from configuration import ROOT_DIR
-from wwpython.scripts.ww_selenium.head import Head
-from wwpython.scripts.ww_selenium.pageheader import PageHeader
 from wwpython.scripts.ww_selenium.homepage import HomePage
-from wwpython.scripts.ww_selenium.FindWorkshopPage import FindWorkshopPage
-from selenium import webdriver
+from wwpython.scripts.ww_selenium.workshop_searchpage import WorkshopSearchPage
+from wwpython.scripts.ww_selenium.workshop_locationspage import WorkshopLocationsPage
+from wwpython.scripts.ww_selenium.workshop_detailspage import WorkshopDetailsPage
 from selenium.webdriver.chrome.options import Options
+from selenium import webdriver
 
-
-logger = logging.getLogger()
-logger.level = logging.INFO
+# Setup unittest logging
+LOGGER = logging.getLogger()
+LOGGER.level = logging.INFO
 stream_handler = logging.StreamHandler(sys.stdout)
-logger.addHandler(stream_handler)
+LOGGER.addHandler(stream_handler)
+
 
 class WWNavigation(unittest.TestCase):
-    HOMEPAGE_TITLE = "WW (Weight Watchers): Weight Loss & Wellness Help | WW USA"
+    HOMEPAGE_TITLE = "WW (Weight Watchers): Weight Loss & Wellness Help"
     FIND_WORKSHOP_TITLE = "Find WW Studios & Meetings Near You | WW USA"
+    LOGGER = logging.getLogger(__name__)
 
-    logger = logging.getLogger(__name__)
-
-    def test_question_2(self):
+    def setUp(self):
+        self.LOGGER.info("### Test Run: Question 2 ###\n")
         # create a new session
-        errors = []
+        self.errors = []
         options = Options()
         options.add_argument('--ignore-certificate-errors')
         options.add_argument('--ignore-ssl-errors')
         options.add_argument('log-level=OFF')
-        options.add_experimental_option('excludeSwitches', ['enable-logging'])
+        options.add_experimental_option('excludeSwitches',
+                                        ['enable-logging'])
         driver_path = os.path.join(ROOT_DIR,
                                    "wwpython",
                                    "drivers",
@@ -38,51 +40,58 @@ class WWNavigation(unittest.TestCase):
         self.driver = webdriver.Chrome(executable_path=driver_path, options=options)
         self.driver.implicitly_wait(30)
         self.driver.maximize_window()
-        # navigate to the application home page
-        self.navbar = PageHeader(self.driver)
-        self.find_workshop = FindWorkshopPage(self.driver)
+        self.home = HomePage(self.driver)
+        self.find_workshop = WorkshopSearchPage(self.driver)
+        self.details_workshop = WorkshopDetailsPage(self.driver)
+        self.locations_workshop = WorkshopLocationsPage(self.driver)
+
+    def test_question2(self):
+        # Navigate to the home page
         self.driver.get("https://www.weightwatchers.com/us/")
 
         # Verify homepage title
         current_title = self.driver.title
         if current_title != self.HOMEPAGE_TITLE:
-            logger.info(f"{current_title} != {self.HOMEPAGE_TITLE}")
-            errors.append(f"{current_title} != {self.HOMEPAGE_TITLE}")
+            LOGGER.info(f"Error: Homepage title does match expected")
+            self.errors.append(f"{current_title} != expected title")
         else:
-            logger.info(f"{current_title} = {self.HOMEPAGE_TITLE}")
+            LOGGER.info(f"HOMEPAGE TITLE MATCHES: {self.HOMEPAGE_TITLE}")
 
-        # Click Find a Workshop
-        self.navbar.clickFindWorkshop()
+        # Verify Find a Workshop title
+        self.home.clickFindWorkshop()
         current_title = self.driver.title
         if current_title != self.FIND_WORKSHOP_TITLE:
-            logger.info(f"{current_title} != {self.FIND_WORKSHOP_TITLE}")
-            errors.append(f"{current_title} != {self.FIND_WORKSHOP_TITLE}")
+            LOGGER.info(f"Error: Find a workshop title does not match expected")
+            self.errors.append(f"{current_title} != expected title")
         else:
-            logger.info(f"{current_title} = {self.FIND_WORKSHOP_TITLE}")
+            LOGGER.info(f"WORKSHOP TITLE MATCHES = {self.FIND_WORKSHOP_TITLE}")
 
-        # Find workshop by ZipCode
+        # Find nearest workshop by ZipCode
         self.find_workshop.typeZipCode("10011")
-        nearest_workshop = self.find_workshop.getWorkshopByDistance(0)
-        distance = self.find_workshop.findDistanceToWorkshop(0)
-        logger.info(f"{nearest_workshop} = {distance}")
-        self.find_workshop.clickWorkshopByDistance(0)
-        active_workshop = self.find_workshop.getActiveWorkshopName()
+        nearest_workshop = self.locations_workshop.getWorkshopByDistance(0)
+        distance = self.locations_workshop.findDistanceToWorkshop(0)
+        LOGGER.info(f"{nearest_workshop} = {distance}")
+        self.locations_workshop.clickWorkshopByDistance(0)
 
+        # Verify displayed location name matches the name of the first searched result
+        active_workshop = self.details_workshop.getActiveWorkshopName()
+        if nearest_workshop != active_workshop:
+            LOGGER.info("Selected workshop does not match displayed location")
+            self.errors.append(f"{current_title} != Selected WorkShop Name")
+        else:
+            LOGGER.info(f"SELECTED WORKSHOP NAME MATCHES DISPLAYED NAME")
 
-        #self.assertEqual(nearest_workshop,
-        #                 active_workshop,
-        #                 "Searched workshop name does not "
-        #                 "match active workshop name"
-        #                 )
-
-# --- New Test: Get the workshop times ... hours of operation do not exist...covid update?
-
-    #def test_get_leader_daily_workshop_count(self):
-        self.find_workshop.printDailySchedule("Sun")
+        # Find daily workshop leaders shift count and log to console
+        self.details_workshop.printDailySchedule("Sun")
 
     def tearDown(self):
-        logger.removeHandler(stream_handler)
         self.driver.close()
+        if self.errors:
+            LOGGER.info('\n-----ERRORS-----')
+            for error in self.errors:
+                LOGGER.error(error)
+            self.assertEqual(1, 2, "The test failed due to the errors above")
+        LOGGER.removeHandler(stream_handler)
 
 
 if __name__ == '__main__':
