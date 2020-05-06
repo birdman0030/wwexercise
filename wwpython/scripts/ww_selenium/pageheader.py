@@ -6,7 +6,7 @@ from selenium.webdriver.common.by import By
 
 
 class PageHeader(SeleniumWrapper):
-    FIND_WORKSHOP = (By.CLASS_NAME, "find-a-meeting")
+    FIND_WORKSHOP = (By.CSS_SELECTOR, '[da-action="nav_header_find-a-workshop"]')
 
     logger = logging.getLogger("pageheader")
 

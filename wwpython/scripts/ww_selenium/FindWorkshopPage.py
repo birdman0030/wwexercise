@@ -6,9 +6,11 @@ from selenium.webdriver.common.by import By
 
 
 class FindWorkshopPage(SeleniumWrapper):
+    # Constants
     INPUT_FIND_WORKSHOP = (By.ID, "meetingSearch")
-    AVAILABLE_WORKSHOPS = (By.CLASS_NAME, "meeting-location")
+    AVAILABLE_WORKSHOPS = (By.CLASS_NAME, "meeting-location__top")
     WORKSHOP_DISTANCE = (By.CLASS_NAME, "location__distance")
+    WORKSHOP_NAME = (By.CLASS_NAME, "location__name")
     WORKSHOP_DAY_SCHEDULE = (By.CLASS_NAME, "schedule-detailed-day")
     WORKSHOP_DAY = (By.CLASS_NAME, "schedule-detailed-day-label")
     WORKSHOP = (By.CLASS_NAME, "schedule-detailed-day-meetings-item")
@@ -20,38 +22,49 @@ class FindWorkshopPage(SeleniumWrapper):
     def __init__(self, driver):
         super().__init__(driver)
 
-    def clickFindWorkshop(self, text: str):
+    def typeZipCode(self, text: str):
         self.typeInElement(self.INPUT_FIND_WORKSHOP, text)
         self.pressEnter(self.INPUT_FIND_WORKSHOP)
 
-    def findWorkshopByDistance(self, index: int):
-        elements = self.getElements(self.AVAILABLE_WORKSHOPS)
-        return elements[index]
+# ---split---
 
-    def findDistanceToWorkshop(self, parent_element):
-        element = parent_element.find_element(self.WORKSHOP_DISTANCE)
-        return self.getElementText(element)
+    def getWorkshopByDistance(self, index: int):
+        elements = self.getElements(self.WORKSHOP_NAME)
+        return (elements[index].text)
+
+    def clickWorkshopByDistance(self, index: int):
+        elements = self.getElements(self.AVAILABLE_WORKSHOPS)
+        self.clickElement(elements[index])
+
+    def findDistanceToWorkshop(self, index: int):
+        elements = self.getElements(self.WORKSHOP_DISTANCE)
+        return (elements[index].text)
+
+# ---split---
+
+    def getActiveWorkshopName(self):
+        return self.getElementText(self.WORKSHOP_NAME)
 
     def findWorkshopScheduleByDay(self, day: str):
         elements = self.getElements(self.WORKSHOP_DAY_SCHEDULE)
         for element in elements:
-            day_element = element.find_elements(self.WORKSHOP_DAY)
-            if day_element.text == day:
+            if element.find_element(*self.WORKSHOP_DAY).text == day.upper():
                 return element
-        raise ValueError(f"Invalid parameter: {day}")
+        print(f"NO {day} found")
+        #raise ValueError(f"Invalid parameter: {day}")
 
     def getLeaderWorkshopNumByDay(self, day: str):
         schedule = {}
         leaders = []
         schedule_element = self.findWorkshopScheduleByDay(day)
-        leader_elements = schedule_element.get_elements(self.WORKSHOP_LEADER)
+        leader_elements = schedule_element.find_elements(*self.WORKSHOP_LEADER)
         for leader_element in leader_elements:
             leaders.append(leader_element.text)
         for i in leaders:
             schedule[i] = schedule.get(i, 0) + 1
-        return leaders
+        return schedule
 
     def printDailySchedule(self, day: str):
         content = self.getLeaderWorkshopNumByDay(day)
-        for key, val in content:
+        for key, val in content.items():
             self.logger.info(f"{key} {val}")

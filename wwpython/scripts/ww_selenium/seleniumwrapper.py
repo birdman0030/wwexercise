@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import logging
+from selenium.webdriver.remote.webelement import WebElement
 
 # from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
@@ -16,13 +17,17 @@ class SeleniumWrapper(object):
         self.logger = logging.getLogger('seleniumwrapper')
 
     def _getElement(self, element):
-        if isinstance(element, tuple):
+        if isinstance(element, WebElement):
+            return element
+        elif isinstance(element, tuple):
             return self.driver.find_element(*element)
         else:
             raise TypeError(f"Unable to find element given a {type(element)}"
                             f" equal to {element}")
 
     def getElements(self, element):
+        if isinstance(element, WebElement):
+            return element
         if isinstance(element, tuple):
             return self.driver.find_elements(*element)
         else:
