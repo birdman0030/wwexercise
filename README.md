@@ -6,15 +6,17 @@ Steps to install python3 (>=v3.6.4):
 [Installation Guide](https://realpython.com/installing-python/)
 
 # Install Pip
-[Linux]
+### Linux
+
 Guide to install pip on linux releases:
 [Linux pip installation guide](https://www.tecmint.com/install-pip-in-linux/)
-[Windows]
+
+### Windows
 Guide to install pip on Windows:
 [Windows pip installation guide](https://www.liquidweb.com/kb/install-pip-windows/)
 
 # Get the project
-[Clone]
+### Clone
 '''bash
 $ git clone https://github.com/birdman0030/wwexercise.git
 '''
@@ -22,11 +24,11 @@ $ git clone https://github.com/birdman0030/wwexercise.git
 # Installing Project
 Steps to install the project via Pypi:
 (prefix with sudo on linux if not a root user)
-[Install]
+### Install
 '''bash
 $ pip3 install wwexercise
 '''
-[Verify]
+### Verify
 '''bash
 $ pip3 show wwexercise
 '''
