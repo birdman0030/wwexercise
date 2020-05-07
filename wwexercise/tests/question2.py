@@ -61,8 +61,8 @@ class WWNavigation(unittest.TestCase):
         self.home.clickFindWorkshop()
         current_title = self.driver.title
         try:
-            self.assertEqual(current_title, self.FIND_WORKSHOP_TITLE)
-            self.LOGGER.info("Current title matches expected title")
+            self.assertIn(self.FIND_WORKSHOP_TITLE, current_title)
+            self.LOGGER.info("Current title contains expected title")
         except AssertionError as e:
             self.errors.append(str(e))
 

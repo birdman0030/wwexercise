@@ -2,7 +2,7 @@ from distutils.core import setup
 
 setup(
     name='wwexercise',
-    version='v0.7',
+    version='v0.8',
     description='Weight Watchers coding exercise in python',
     url='https://github.com/birdman0030/wwexercise',
     author='Kurt Bird',
