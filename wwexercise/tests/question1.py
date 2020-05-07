@@ -14,7 +14,7 @@ LOGGER.addHandler(stream_handler)
 
 class WWNavigation(unittest.TestCase):
     # Constants
-    VALID_PATH = os.path.join("wwpython", "data", "sample_data.txt")
+    VALID_PATH = os.path.join("wwexercise", "data", "sample_data.txt")
     INVALID_PATH = os.path.join("This_File_Does_Not_Exist.json")
     LOGGER = logging.getLogger(__name__)
 
