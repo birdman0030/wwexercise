@@ -34,7 +34,7 @@ class WWNavigation(unittest.TestCase):
         options.add_experimental_option('excludeSwitches',
                                         ['enable-logging'])
         driver_path = os.path.join(ROOT_DIR,
-                                   "wwpython",
+                                   "wwexercise",
                                    "drivers",
                                    "chromedriver.exe")
         self.driver = webdriver.Chrome(executable_path=driver_path, options=options)
