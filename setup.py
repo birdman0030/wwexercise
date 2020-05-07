@@ -6,10 +6,6 @@ setup(name='wwexercise',
     version='v0.4',
     description='Weight Watchers coding exercise in python',
     url='https://github.com/birdman0030/wwexercise',
-    download_url=[
-        'https://github.com/birdman0030/wwexercise/archive/v0.4.tar.gz',
-        'https://github.com/birdman0030/wwexercise/archive/v0.4.zip'
-        ],
     author='Kurt Bird',
     author_email='kurtbird1@gmail.com',
     license='GNU',
