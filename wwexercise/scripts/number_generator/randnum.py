@@ -10,7 +10,6 @@ def randomNumGen():
     :return generated: a list of integers.
     """
     generated = [randint(0, 1000) for i in range(500)]
-    print(generated)
     return generated
 
 
@@ -27,4 +26,5 @@ def findNumPosition(nums, val):
 
 if __name__ == "__main__":
     container = randomNumGen()
+    print(container)
     print(findNumPosition(container, 10))

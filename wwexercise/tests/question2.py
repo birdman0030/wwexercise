@@ -4,10 +4,10 @@ import os
 import sys
 
 from configuration import ROOT_DIR
-from wwpython.scripts.ww_selenium.homepage import HomePage
-from wwpython.scripts.ww_selenium.workshop_searchpage import WorkshopSearchPage
-from wwpython.scripts.ww_selenium.workshop_locationspage import WorkshopLocationsPage
-from wwpython.scripts.ww_selenium.workshop_detailspage import WorkshopDetailsPage
+from wwexercise.scripts.ww_selenium.homepage import HomePage
+from wwexercise.scripts.ww_selenium.workshop_searchpage import WorkshopSearchPage
+from wwexercise.scripts.ww_selenium.workshop_locationspage import WorkshopLocationsPage
+from wwexercise.scripts.ww_selenium.workshop_detailspage import WorkshopDetailsPage
 from selenium.webdriver.chrome.options import Options
 from selenium import webdriver
 
@@ -51,35 +51,35 @@ class WWNavigation(unittest.TestCase):
 
         # Verify homepage title
         current_title = self.driver.title
-        if current_title != self.HOMEPAGE_TITLE:
-            LOGGER.info(f"Error: Homepage title does match expected")
-            self.errors.append(f"{current_title} != expected title")
-        else:
-            LOGGER.info(f"HOMEPAGE TITLE MATCHES: {self.HOMEPAGE_TITLE}")
+        try:
+            self.assertEqual(current_title, self.HOMEPAGE_TITLE)
+            self.LOGGER.info("Current title matches expected title")
+        except AssertionError as e:
+            self.errors.append(str(e))
 
         # Verify Find a Workshop title
         self.home.clickFindWorkshop()
         current_title = self.driver.title
-        if current_title != self.FIND_WORKSHOP_TITLE:
-            LOGGER.info(f"Error: Find a workshop title does not match expected")
-            self.errors.append(f"{current_title} != expected title")
-        else:
-            LOGGER.info(f"WORKSHOP TITLE MATCHES = {self.FIND_WORKSHOP_TITLE}")
+        try:
+            self.assertEqual(current_title, self.FIND_WORKSHOP_TITLE)
+            self.LOGGER.info("Current title matches expected title")
+        except AssertionError as e:
+            self.errors.append(str(e))
 
         # Find nearest workshop by ZipCode
         self.find_workshop.typeZipCode("10011")
         nearest_workshop = self.locations_workshop.getWorkshopByDistance(0)
         distance = self.locations_workshop.findDistanceToWorkshop(0)
-        LOGGER.info(f"{nearest_workshop} = {distance}")
+        self.LOGGER.info(f"{nearest_workshop} = {distance}")
         self.locations_workshop.clickWorkshopByDistance(0)
 
         # Verify displayed location name matches the name of the first searched result
         active_workshop = self.details_workshop.getActiveWorkshopName()
-        if nearest_workshop != active_workshop:
-            LOGGER.info("Selected workshop does not match displayed location")
-            self.errors.append(f"{current_title} != Selected WorkShop Name")
-        else:
-            LOGGER.info(f"SELECTED WORKSHOP NAME MATCHES DISPLAYED NAME")
+        try:
+            self.assertEqual(nearest_workshop, active_workshop)
+            self.LOGGER.info("Selected workshop matches searched location")
+        except AssertionError as e:
+            self.errors.append(str(e))
 
         # Find daily workshop leaders shift count and log to console
         self.details_workshop.printDailySchedule("Sun")
@@ -87,11 +87,11 @@ class WWNavigation(unittest.TestCase):
     def tearDown(self):
         self.driver.close()
         if self.errors:
-            LOGGER.info('\n-----ERRORS-----')
+            self.LOGGER.info('\n-----ERRORS-----')
             for error in self.errors:
-                LOGGER.error(error)
-            self.assertEqual(1, 2, "The test failed due to the errors above")
-        LOGGER.removeHandler(stream_handler)
+                self.LOGGER.error(error)
+            raise Exception(f"{len(self.errors)} Error(s) found")
+        self.LOGGER.removeHandler(stream_handler)
 
 
 if __name__ == '__main__':

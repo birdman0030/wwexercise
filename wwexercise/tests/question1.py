@@ -3,7 +3,7 @@ import unittest
 import sys
 import os
 
-from wwpython.scripts.parser.parser import Parser
+from wwexercise.scripts.parser.parser import Parser
 
 # Setup unittest logging
 LOGGER = logging.getLogger()
@@ -18,25 +18,35 @@ class WWNavigation(unittest.TestCase):
     INVALID_PATH = os.path.join("This_File_Does_Not_Exist.json")
     LOGGER = logging.getLogger(__name__)
 
+    @classmethod
+    def setUpClass(self):
+        self.LOGGER.info("### QUESTION 1 ###")
+
     def test_question1_valid_path(self):
-        self.LOGGER.info("\n### Test Run: Valid Path - Question 1 ###")
+        # Test valid path returns True
+        self.LOGGER.info("\n### Test Run: Valid Path ###")
         parser = Parser(self.VALID_PATH)
         self.LOGGER.info(f"File Path = {self.VALID_PATH}")
         self.assertTrue(parser.doesFileExist(), f"{self.VALID_PATH} file does not exist")
+        self.LOGGER.info("Valid path returned 'True'")
 
-    def test_question1_invalid_path(self):
-        self.LOGGER.info("\n### Test Run: Invalid Path - Question 1 ###")
+        # Test invalid path throws IOERROR exception
+        self.LOGGER.info("\n### Test Run: Invalid Path ###")
         parser = Parser(self.INVALID_PATH)
         self.LOGGER.info(f"File Path = {self.INVALID_PATH}")
         with self.assertRaises(IOError):
             parser.doesFileExist()
+        self.LOGGER.info("Invalid path threw IOERROR exception")
 
-    def test_question1_parse_file(self):
-        self.LOGGER.info("\n### Test Run: Parse File - Question 1 ###")
+        # Parse file
+        self.LOGGER.info("\n### Test Run: Parse File ###")
         parser = Parser(self.VALID_PATH)
-        self.LOGGER.info(f"File Path = {self.VALID_PATH}")
         results = parser.parseFile()
         parser.printResults(results)
+
+    @classmethod
+    def tearDownClass(self):
+        self.LOGGER.removeHandler(stream_handler)
 
 
 if __name__ == '__main__':
