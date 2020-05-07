@@ -2,13 +2,13 @@ from distutils.core import setup
 with open("README.md", "r") as f:
       long_description = f.read()
 
-setup(name='wwpython',
-    version='0.1',
-    description='Weight Watchers coding exercise in python3',
+setup(name='wwexercise',
+    version='0.3',
+    description='Weight Watchers coding exercise in python',
     url='https://github.com/birdman0030/wwpython',
     download_url=[
-        'https://github.com/birdman0030/wwexercise/archive/0.1.tar.gz',
-        'https://github.com/birdman0030/wwexercise/archive/0.1.zip'
+        'https://github.com/birdman0030/wwexercise/archive/0.3.tar.gz',
+        'https://github.com/birdman0030/wwexercise/archive/0.3.zip'
         ],
     author='Kurt Bird',
     author_email='kurtbird1@gmail.com',
