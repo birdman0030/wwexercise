@@ -17,26 +17,26 @@ Guide to install pip on Windows:
 
 # Get the project
 ### Clone
-'''bash
+```bash
 $ git clone https://github.com/birdman0030/wwexercise.git
-'''
+```
 
 # Installing Project
 Steps to install the project via Pypi:
 (prefix with sudo on linux if not a root user)
 ### Install
-'''bash
+```bash
 $ pip3 install wwexercise
-'''
+```
 ### Verify
-'''bash
+```bash
 $ pip3 show wwexercise
-'''
+```
 
 # Run Tests
 Navigate to the 'tests' directory in the project
-'''bash
+```bash
 $ python question1.py
 $ python question2.py
 $ python question3.py
-'''
+```
