@@ -6,7 +6,7 @@ Weight Watchers International coding exercise
 
 The following prerequisites will be needed to run the project:
 
-##### **Install Python3**
+#### **Install Python3**
 	
 Windows
 	
@@ -20,7 +20,7 @@ $ sudo apt install python3
 $ sudo apt install python3-pip
 ```
 
-##### **Install Chrome Browser**
+#### **Install Chrome Browser**
 
 [Chrome Browser Installers](https://www.google.com/chrome/) - This project supports the latest Chrome Browser Version - Build 81.X
 
