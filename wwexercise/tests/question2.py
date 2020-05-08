@@ -25,8 +25,8 @@ class WWNavigation(unittest.TestCase):
 
     def setUp(self):
         self.LOGGER.info("### Test Run: Question 2 ###\n")
-        # create a new session
         self.errors = []
+        # create a new session with chrome options
         options = Options()
         options.add_argument('--ignore-certificate-errors')
         options.add_argument('--ignore-ssl-errors')
@@ -37,9 +37,12 @@ class WWNavigation(unittest.TestCase):
                                    "wwexercise",
                                    "drivers",
                                    "chromedriver.exe")
-        self.driver = webdriver.Chrome(executable_path=driver_path, options=options)
+        self.driver = webdriver.Chrome(executable_path=driver_path,
+                                       options=options)
         self.driver.implicitly_wait(30)
         self.driver.maximize_window()
+
+        # Instantiate web page classes.
         self.home = HomePage(self.driver)
         self.find_workshop = WorkshopSearchPage(self.driver)
         self.details_workshop = WorkshopDetailsPage(self.driver)
@@ -51,6 +54,9 @@ class WWNavigation(unittest.TestCase):
 
         # Verify homepage title
         current_title = self.driver.title
+
+        # If page title != HOMEPAGE_TITLE,
+        # catch Assertion error and continue.
         try:
             self.assertEqual(current_title, self.HOMEPAGE_TITLE)
             self.LOGGER.info("Current title matches expected title")
@@ -60,21 +66,32 @@ class WWNavigation(unittest.TestCase):
         # Verify Find a Workshop title
         self.home.clickFindWorkshop()
         current_title = self.driver.title
+
+        # If page title != FIND_WORKSHOP_TITLE,
+        # catch Assertion error and continue.
         try:
             self.assertIn(self.FIND_WORKSHOP_TITLE, current_title)
             self.LOGGER.info("Current title contains expected title")
         except AssertionError as e:
             self.errors.append(str(e))
 
-        # Find nearest workshop by ZipCode
+        # Find workshop by ZipCode and search.
         self.find_workshop.typeZipCode("10011")
+
+        # Find the nearest workshop and distance.
         nearest_workshop = self.locations_workshop.getWorkshopByDistance(0)
         distance = self.locations_workshop.findDistanceToWorkshop(0)
         self.LOGGER.info(f"{nearest_workshop} = {distance}")
+
+        # Click on the nearest workshop.
         self.locations_workshop.clickWorkshopByDistance(0)
 
-        # Verify displayed location name matches the name of the first searched result
+        # Verify displayed location name matches
+        # the name of the first searched result
         active_workshop = self.details_workshop.getActiveWorkshopName()
+
+        # If selected workshop name != searched workshop name,
+        # catch Assertion error and continue.
         try:
             self.assertEqual(nearest_workshop, active_workshop)
             self.LOGGER.info("Selected workshop matches searched location")
@@ -85,12 +102,17 @@ class WWNavigation(unittest.TestCase):
         self.details_workshop.printDailySchedule("Sun")
 
     def tearDown(self):
+        # Close the browser
         self.driver.close()
+
+        # If errors were found, log them to screen and fail test.
         if self.errors:
             self.LOGGER.info('\n-----ERRORS-----')
             for error in self.errors:
                 self.LOGGER.error(error)
             raise Exception(f"{len(self.errors)} Error(s) found")
+
+        # Remove logging stream handler
         self.LOGGER.removeHandler(stream_handler)
 
 

@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 
-from configuration import ROOT_DIR
-
 import os.path
 import logging
+
+from configuration import ROOT_DIR
 
 
 class Parser:
@@ -14,6 +14,8 @@ class Parser:
     def doesFileExist(self):
         """
         Verifies if a file exists and throws an IOError exception if not found.
+
+        :return True: bool
         """
 
         if os.path.isfile(self.path):
